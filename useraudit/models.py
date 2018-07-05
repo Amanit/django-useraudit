@@ -9,8 +9,17 @@ from .signals import password_has_expired, account_has_expired, login_failure_li
 logger = logging.getLogger('django.security')
 
 
+class LoginPlace(models.Model):
+    city = models.CharField(max_length=255, blank=True)
+    region = models.CharField(max_length=255, blank=True)
+    country = models.CharField(max_length=255, blank=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
+    organisation = models.CharField(max_length=255, blank=True)
+
+
 class LoginAttempt(models.Model):
-    username = models.CharField(max_length=255, null=True, blank=True)
+    username = models.CharField(max_length=255, blank=True)
     count = models.PositiveIntegerField(null=True, blank=True, default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -36,11 +45,12 @@ class Log(models.Model):
         abstract = True
         ordering = ['-timestamp']
 
-    username = models.CharField(max_length=255, null=True, blank=True)
-    ip_address = models.CharField(max_length=40, null=True, blank=True, verbose_name="IP")
-    forwarded_by = models.CharField(max_length=1000, null=True, blank=True)
-    user_agent = models.CharField(max_length=1000, null=True, blank=True)
+    username = models.CharField(max_length=255, blank=True)
+    ip_address = models.CharField(max_length=40, blank=True, verbose_name="IP")
+    forwarded_by = models.CharField(max_length=1000, blank=True)
+    user_agent = models.CharField(max_length=1000, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+    place = models.ForeignKey(LoginPlace, null=True, blank=True, on_delete=models.SET_NULL)
 
 
 class UserDeactivation(models.Model):
@@ -55,7 +65,7 @@ class UserDeactivation(models.Model):
     )
 
     username = models.CharField(max_length=255)
-    reason = models.CharField(max_length=2, blank=True, null=True, choices=DEACTIVATION_REASON_CHOICES)
+    reason = models.CharField(max_length=2, blank=True, choices=DEACTIVATION_REASON_CHOICES)
     timestamp = models.DateTimeField(auto_now_add=True)
 
 

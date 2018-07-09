@@ -91,13 +91,13 @@ class LoginLogger(object):
         USER_AGENT_MAX_LENGTH = Log._meta.get_field('user_agent').max_length
         if request:
             ip_address, proxies = self.extract_ip_address(request)
-            user_agent = request.META.get('HTTP_USER_AGENT')
+            user_agent = request.META.get('HTTP_USER_AGENT', '')
         else:
-            ip_address = None
+            ip_address = ''
             proxies = None
-            user_agent = None
+            user_agent = ''
 
-        if user_agent is not None and len(user_agent) > USER_AGENT_MAX_LENGTH:
+        if user_agent is not '' and len(user_agent) > USER_AGENT_MAX_LENGTH:
             logger.warning('Truncating User Agent to fit into %d. Original was: "%s"',
                            USER_AGENT_MAX_LENGTH, user_agent)
             user_agent = user_agent[:USER_AGENT_MAX_LENGTH]
@@ -110,7 +110,7 @@ class LoginLogger(object):
         }
 
     def extract_ip_address(self, request):
-        client_ip = request.META.get('REMOTE_ADDR')
+        client_ip = request.META.get('REMOTE_ADDR', '')
         proxies = None
         forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
         if forwarded_for is not None:

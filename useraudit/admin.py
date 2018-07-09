@@ -1,6 +1,6 @@
 try:
     from django.core.urlresolvers import reverse
-except ModuleNotFoundError:
+except ImportError:
     from django.urls import reverse
 
 from django.contrib.auth import get_user_model

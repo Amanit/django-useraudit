@@ -38,6 +38,15 @@ class LoginAttemptAdmin(admin.ModelAdmin):
     activate.allow_tags = True
 
 
+class LoginPlaceAdmin(admin.ModelAdmin):
+    model = m.LoginPlace
+
+    list_filter = ['city', 'region', 'country']
+    list_display = ('city', 'region', 'country', 'latitude', 'longitude', 'organisation')
+    list_display_links = None
+
+
 admin.site.register(m.LoginLog, LogAdmin)
 admin.site.register(m.FailedLoginLog, LogAdmin)
 admin.site.register(m.LoginAttempt, LoginAttemptAdmin)
+admin.site.register(m.LoginPlace, LoginPlaceAdmin)
